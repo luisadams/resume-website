@@ -1,4 +1,4 @@
-const API_URL = "https://luisresumeapi-ffbcfmcgengegebb.eastus-01.azurewebsites.net/api/visitorcounter";
+const API_URL = "https://z5p4nwgg79.execute-api.us-east-1.amazonaws.com/default/visitor-counter";
 
 async function updateVisitorCount() {
   const counterElement = document.getElementById("visitor-count");
