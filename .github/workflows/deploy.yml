@@ -1,4 +1,4 @@
-name: Deploy Frontend to Azure Storage
+name: Deploy Frontend to AWS S3
 
 on:
   push:
@@ -12,12 +12,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Upload to Azure Storage static website
-        uses: azure/CLI@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          inlineScript: |
-            az storage blob upload-batch \
-              --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
-              --destination '$web' \
-              --source . \
-              --overwrite
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ OpawghJA7VaeaUY583zjal8Q6vCfITPtatOHqjQ4 }}
+          aws-region: us-east-1
+
+      - name: Sync files to S3
+        run: |
+          aws s3 sync . s3://resume.guerr-tech.org \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ E2POCNTU2WEIED }} \
+            --paths "/*"
